@@ -1,12 +1,14 @@
 "use client";
+import { SelectedCarAmountContext } from "@/context/SelectedCarAmountContext";
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 export default function Checkoutform() {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+    const { carAmount, setCarAmount } = useContext(SelectedCarAmountContext);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -44,7 +46,7 @@ export default function Checkoutform() {
             loading ? "bg-gray-400 cursor-not-allowed" : "bg-black hover:bg-gray-800"
           }`}
         >
-          {loading ? "Processing..." : "Pay Now"}
+          {loading ? "Processing..." : `Pay Now ${carAmount}`}
         </button>
 
         {message && <div className="text-red-500 text-sm text-center">{message}</div>}

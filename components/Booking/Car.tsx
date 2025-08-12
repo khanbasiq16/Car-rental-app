@@ -23,8 +23,8 @@ const Car = () => {
           <div
             key={item.id}
             onClick={() => {
-      setSelectedCar(item.id);
-      if (directionData?.routes?.[0]?.distance) {
+              if (directionData?.routes?.[0]?.distance) {
+        setSelectedCar(item.id);
         setCarAmount(getcostofcar(item.charges));
       }
     }}

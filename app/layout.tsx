@@ -5,6 +5,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 
 import { Inter , Outfit  } from 'next/font/google'
 import Navbar from "@/components/Navbar";
+import Providers from "@/components/Providers";
+import { Toaster } from 'react-hot-toast';
 
 
 const outfit = Outfit({
@@ -29,8 +31,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${outfit.className} `}>
 
+        <Providers>
         <Navbar/>
         {children}
+         <Toaster position="top-center" reverseOrder={false} />
+        </Providers>
       </body>
     </html>
      </ClerkProvider>

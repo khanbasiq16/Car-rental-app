@@ -24,7 +24,7 @@ const Booking = () => {
         <div className="p-5 overflow-y-auto">
           <AutoCompletetrAdress />
           <Car />
-          <Cards />
+          {/* <Cards /> */}
         </div>
 
         {/* Button fixed at bottom of container */}

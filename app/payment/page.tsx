@@ -1,20 +1,21 @@
 "use client";
 import Checkoutform from "@/components/Payment/Checkoutform";
+import { SelectedCarAmountContext } from "@/context/SelectedCarAmountContext";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function Page() {
   const [clientSecret, setClientSecret] = useState("");
-
+  const { carAmount, setCarAmount } = useContext(SelectedCarAmountContext);
   useEffect(() => {
   
     fetch("/api/create-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: 10.99 }), 
+      body: JSON.stringify({ amount: carAmount }), 
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
