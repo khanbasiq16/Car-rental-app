@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AutoCompletetrAdress from "./AutoCompletetrAdress";
 import Car from "./Car";
 import Cards from "./Cards";
@@ -11,7 +11,18 @@ const Booking = () => {
 
   const { carAmount, setCarAmount } = useContext(SelectedCarAmountContext);
 
-  const screen = window.innerHeight * 0.75;
+const [screen, setScreen] = useState(0);
+
+  useEffect(() => {
+    function updateScreen() {
+      setScreen(window.innerHeight * 0.75);
+    }
+    updateScreen();
+
+    window.addEventListener("resize", updateScreen);
+    return () => window.removeEventListener("resize", updateScreen);
+  }, []);
+
 
   return (
     <div className="p-5 ">
