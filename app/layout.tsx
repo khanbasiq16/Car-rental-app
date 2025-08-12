@@ -3,17 +3,16 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 
-import { Inter , Outfit  } from 'next/font/google'
-import Navbar from "@/components/Navbar";
-import Providers from "@/components/Providers";
-import { Toaster } from 'react-hot-toast';
+import { Inter, Outfit } from "next/font/google";
 
+import Providers from "@/components/Providers";
+import { Toaster } from "react-hot-toast";
+import NavbarWrapper from "@/components/NavbarWrapper";
 
 const outfit = Outfit({
-  subsets: ['latin'],
-  display: 'swap',
-})
-
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,20 +23,21 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>)
+
+
+{
   return (
-     <ClerkProvider>
-
-    <html lang="en">
-      <body className={`${outfit.className} `}>
-
-        <Providers>
-        <Navbar/>
-        {children}
-         <Toaster position="top-center" reverseOrder={false} />
-        </Providers>
-      </body>
-    </html>
-     </ClerkProvider>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${outfit.className} `}>
+          <Providers>
+            <NavbarWrapper />
+            {children}
+            <Toaster position="top-center" reverseOrder={false} />
+          </Providers>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
