@@ -1,9 +1,18 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import { DestinationCordinatesContext } from "@/context/DestinationCordinates";
+import { SourceCordinatesContext } from "@/context/SourceCordinates";
+import React, { useEffect, useState, useRef, useContext } from "react";
+
+const BASE_MAPBOX_RETRIEVE_URL =
+  "https://api.mapbox.com/search/searchbox/v1/retrieve/";
+const session_token = "8e4f51b2-8a63-4ac0-9187-91fd3770f7d2";
 
 const AutoCompletetrAdress = () => {
   const [source, setSource] = useState<string>("");
+  const {sourceCordinates, setSourceCordinate} = useContext(SourceCordinatesContext);
+
   const [destination, setDestination] = useState<string>("");
+  const {destinationCordinates, setDestinationCordinates} = useContext(DestinationCordinatesContext);
 
   const [sourceList, setSourceList] = useState<any[]>([]);
   const [destinationList, setDestinationList] = useState<any[]>([]);
@@ -32,14 +41,13 @@ const AutoCompletetrAdress = () => {
 
   // Source debounce
   useEffect(() => {
-    if (!sourceTyping.current) return; // prevent auto-fetch when selecting
+    if (!sourceTyping.current) return;
     const timer = setTimeout(() => {
       getAddress(source, setSourceList);
     }, 800);
     return () => clearTimeout(timer);
   }, [source]);
 
-  // Destination debounce
   useEffect(() => {
     if (!destTyping.current) return;
     const timer = setTimeout(() => {
@@ -47,6 +55,40 @@ const AutoCompletetrAdress = () => {
     }, 800);
     return () => clearTimeout(timer);
   }, [destination]);
+
+  const onSourceAddressClick = async (item: any) => {
+    sourceTyping.current = false;
+    setSource(item.full_address);
+    setSourceList([]);
+
+    const res = await fetch(
+      `${BASE_MAPBOX_RETRIEVE_URL}${item.mapbox_id}?session_token=${session_token}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
+    );
+    const result = await res.json();
+    console.log("Source Address Details:", result);
+
+    setSourceCordinate({
+      lng: result?.features[0]?.geometry?.coordinates[0],
+      lat: result?.features[0]?.geometry?.coordinates[1],
+    });
+  };
+
+  const onDestinationAddressClick = async (item: any) => {
+    destTyping.current = false; 
+                  setDestination(item.full_address);
+                  setDestinationList([]);
+
+    const res = await fetch(
+      `${BASE_MAPBOX_RETRIEVE_URL}${item.mapbox_id}?session_token=${session_token}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
+    );
+    const result = await res.json();
+    console.log("Source Address Details:", result);
+
+    setDestinationCordinates({
+      lng: result?.features[0]?.geometry?.coordinates[0],
+      lat: result?.features[0]?.geometry?.coordinates[1],
+    });
+  };
 
   return (
     <div className="mt-5">
@@ -70,9 +112,7 @@ const AutoCompletetrAdress = () => {
                 key={index}
                 className="p-2 hover:bg-gray-100 cursor-pointer"
                 onClick={() => {
-                  sourceTyping.current = false; // prevent re-fetch
-                  setSource(item.full_address);
-                  setSourceList([]);
+                  onSourceAddressClick(item);
                 }}
               >
                 {item.full_address}
@@ -102,9 +142,7 @@ const AutoCompletetrAdress = () => {
                 key={index}
                 className="p-2 hover:bg-gray-100 cursor-pointer"
                 onClick={() => {
-                  destTyping.current = false; // prevent re-fetch
-                  setDestination(item.full_address);
-                  setDestinationList([]);
+                 onDestinationAddressClick(item)
                 }}
               >
                 {item.full_address}
